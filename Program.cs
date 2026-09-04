@@ -6,7 +6,7 @@ builder.WebHost.UseUrls($"http://*:{port}");
 
 // 2. Adicione os serviços ANTES do builder.Build()
 builder.Services.AddSignalR();
-builder.Services.AddControllersWithViews(); // Ou AddRazorPages(), dependendo do seu projeto
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -21,7 +21,7 @@ app.UseHttpsRedirection();
 
 app.UseDefaultFiles();
 
-app.UseStaticFiles(); // Importante para ler a pasta wwwroot (CSS, JS, etc.)
+app.UseStaticFiles();
 
 app.UseRouting();
 
@@ -32,7 +32,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-// Substitua "ChatHub" pelo nome real da classe do seu Hub do SignalR
-// app.MapHub<ChatHub>("/chatHub");
+// Ativando o endpoint do SignalR corretamente:
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
