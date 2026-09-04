@@ -18,6 +18,9 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseDefaultFiles();
+
 app.UseStaticFiles(); // Importante para ler a pasta wwwroot (CSS, JS, etc.)
 
 app.UseRouting();
