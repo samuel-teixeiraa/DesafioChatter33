@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Local Web</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            max-height: 150px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+
+        li {
+            padding: 4px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+            button:hover {
+                background: #0056b3;
+            }
+    </style>
+</head>
+<body>
+
+    <h2>Chat Local em Ambiente Web</h2>
+    <p>Abra duas abas diferentes deste link no navegador para simular a troca de mensagens.</p>
+
+    <div class="container">
+        <div class="box">
+            <h3>Enviar</h3>
+            <label>Seu Nome / Programa:</label>
+            <input type="text" id="txtNome" value="Programa 1" />
+
+            <label>Mensagem:</label>
+            <input type="text" id="txtMensagem" placeholder="Digite aqui..." />
+            <button id="btnEnviar">Enviar</button>
+
+            <h4>Histórico Local</h4>
+            <ul id="lstHistorico"></ul>
+        </div>
+
+        <div class="box">
+            <h3>Receber</h3>
+            <h4>Mensagens da Rede</h4>
+            <ul id="lstMensagensRecebidas"></ul>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+
+        connection.on("ReceberMensagem", function (remetente, mensagem) {
+            const li = document.createElement("li");
+            li.textContent = `[De ${remetente}]: ${mensagem}`;
+            document.getElementById("lstMensagensRecebidas").appendChild(li);
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        document.getElementById("btnEnviar").addEventListener("click", function (event) {
+            const remetente = document.getElementById("txtNome").value;
+            const mensagem = document.getElementById("txtMensagem").value;
+
+            if (!mensagem.trim()) return;
+
+            connection.invoke("EnviarMensagem", remetente, mensagem).catch(err => console.error(err.toString()));
+
+            const li = document.createElement("li");
+            li.textContent = `[Enviado]: ${mensagem}`;
+            document.getElementById("lstHistorico").appendChild(li);
+
+            document.getElementById("txtMensagem").value = "";
+            document.getElementById("txtMensagem").focus();
+            event.preventDefault();
+        });
+    </script>
+</body>
+</html>
