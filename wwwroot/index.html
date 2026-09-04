@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -88,7 +88,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
     <script>
-        const connection = new signalR.HubConnectionBuilder().withUrl("/chathub").build();
+        const connection = new signalR.HubConnectionBuilder().withUrl("/chatHub").build();
 
         connection.on("ReceberMensagem", function (remetente, mensagem) {
             const li = document.createElement("li");
